@@ -1,0 +1,49 @@
+---
+- name: "{{ repo }}: Check src folder {{ src }}"
+  stat:
+    path: "{{ src }}"
+  register: src_result
+  failed_when: not (src_result.stat.exists and src_result.stat.isdir is defined and src_result.stat.isdir)
+
+- name: "{{ repo }}: Check restic repo config"
+  shell: restic cat config
+  environment:
+    RESTIC_REPOSITORY: "{{ repo }}"
+    RESTIC_PASSWORD: "{{ password }}"
+  register: cat_result
+  failed_when: cat_result.rc != 0 and not ("no such file or directory" in cat_result.stderr)
+
+- name: "{{ repo }}: Create repo if it doesn't exist"
+  shell: restic init
+  environment:
+    RESTIC_REPOSITORY: "{{ repo }}"
+    RESTIC_PASSWORD: "{{ password }}"
+  register: init_result
+  when: cat_result.rc == 1 and ("no such file or directory" in cat_result.stderr)
+  failed_when: init_result.rc != 0
+
+- name: "{{ repo }}: Backup"
+  shell: restic backup {{ src }}
+  environment:
+    RESTIC_REPOSITORY: "{{ repo }}"
+    RESTIC_PASSWORD: "{{ password }}"
+  register: backup_result
+  failed_when: backup_result.rc != 0
+
+- name: "{{ repo }}: Check repo metadata"
+  shell: restic check
+  environment:
+    RESTIC_REPOSITORY: "{{ repo }}"
+    RESTIC_PASSWORD: "{{ password }}"
+  register: check_result
+  when: restic_perform_check
+  failed_when: check_result.rc != 0
+
+- name: "{{ repo }}: Check repo data"
+  shell: restic check --read-data
+  environment:
+    RESTIC_REPOSITORY: "{{ repo }}"
+    RESTIC_PASSWORD: "{{ password }}"
+  register: check_data_result
+  when: restic_perform_data_check
+  failed_when: check_data_result.rc != 0

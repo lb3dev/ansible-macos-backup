@@ -1,0 +1,7 @@
+---
+- hosts: all
+  vars_files:
+    - backups.yml
+  roles:
+    - packages
+    - restic
