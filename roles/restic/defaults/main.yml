@@ -2,11 +2,5 @@
 restic_perform_check: False
 restic_perform_data_check: False
 
-#restic_backups:
-#  local_backups:
-#    - repo: /repo1
-#      src: /data1
-#      password: PLACEHOLDER
-#    - repo: /repo2
-#      src: /data2
-#      password: PLACEHOLDER
+restic_backups:
+  local_backups:
