@@ -15,3 +15,7 @@ rdiff_backups:
   local_backups:
 #    - repo: /backup
 #      src: /data
+
+copy_backups:
+#  - src: /file
+#    dest: /copy/file

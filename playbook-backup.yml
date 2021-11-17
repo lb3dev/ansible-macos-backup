@@ -5,3 +5,11 @@
   roles:
     - packages
     - restic
+    - rdiff
+  tasks:
+    - name: Copy backup
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      with_items:
+        "{{ copy_backups | default([]) }}"

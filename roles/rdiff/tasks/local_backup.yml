@@ -1,0 +1,22 @@
+---
+- name: "{{ repo }}: Check src {{ src }}"
+  stat:
+    path: "{{ src }}"
+  register: src_result
+  failed_when: not (src_result.stat.exists and src_result.stat.isdir is defined and src_result.stat.isdir)
+
+- name: "{{ repo }}: Check repo folder"
+  stat:
+    path: "{{ repo }}"
+  register: repo_result
+
+- name: "{{ repo }}: Verify destination"
+  shell: rdiff-backup --verify {{ repo }}
+  register: verify_result
+  when: repo_result.stat.exists
+  failed_when: verify_result.rc != 0
+
+- name: "{{ repo }}: Backup"
+  shell: rdiff-backup {{ src }} {{ repo }}
+  register: backup_result
+  failed_when: backup_result.rc != 0
