@@ -2,6 +2,7 @@
 - include_tasks: local_backup.yml
   vars:
     repo: "{{ item.repo }}"
+    repo_base: "{{ item.repo | dirname }}"
     src: "{{ item.src }}"
     password: "{{ item.password }}"
   with_items:

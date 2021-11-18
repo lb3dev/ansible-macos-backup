@@ -5,18 +5,25 @@
   register: src_result
   failed_when: not (src_result.stat.exists and src_result.stat.isdir is defined and src_result.stat.isdir)
 
-- name: "{{ repo }}: Check repo folder"
+- name: "{{ repo }}: Check repo base folder {{ repo_base }}"
   stat:
-    path: "{{ repo }}"
-  register: repo_result
+    path: "{{ repo_base }}"
+  register: repo_base_result
 
-- name: "{{ repo }}: Verify destination"
-  shell: rdiff-backup --verify {{ repo }}
-  register: verify_result
-  when: repo_result.stat.exists
-  failed_when: verify_result.rc != 0
+- block:
+    - name: "{{ repo }}: Check repo folder {{ repo }}"
+      stat:
+        path: "{{ repo }}"
+      register: repo_result
 
-- name: "{{ repo }}: Backup"
-  shell: rdiff-backup {{ src }} {{ repo }}
-  register: backup_result
-  failed_when: backup_result.rc != 0
+    - name: "{{ repo }}: Verify repo"
+      shell: rdiff-backup --verify {{ repo }}
+      register: verify_result
+      when: repo_result.stat.exists
+      failed_when: verify_result.rc != 0
+
+    - name: "{{ repo }}: Backup"
+      shell: rdiff-backup {{ src }} {{ repo }}
+      register: backup_result
+      failed_when: backup_result.rc != 0
+  when: repo_base_result.stat.exists or (not repo_base_result.stat.exists and not skip_backup_if_repo_missing)

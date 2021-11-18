@@ -1,3 +1,5 @@
 ---
+skip_backup_if_repo_missing: False
+
 rdiff_backups:
   local_backups:
