@@ -7,3 +7,4 @@
     password: "{{ item.password }}"
   with_items:
     "{{ restic_backups['local_backups'] | default([]) }}"
+  when: (item.repo is defined) and (item.src is defined) and (item.password is defined)

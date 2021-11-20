@@ -13,3 +13,4 @@
         dest: "{{ item.dest }}"
       with_items:
         "{{ copy_backups | default([]) }}"
+      when: (item.src is defined) and (item.dest is defined)
