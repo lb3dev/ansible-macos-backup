@@ -1,0 +1,26 @@
+---
+skip_backup_if_repo_missing: True
+
+restic_perform_check: True
+restic_perform_data_check: False
+
+restic_backups:
+  local_backups:
+    - repo: ./tests/repo_restic1
+      src: ./tests/data
+      password: a
+    - repo: ./tests/missing/repo_restic2
+      src: ./tests/data
+      password: a
+
+rdiff_backups:
+  local_backups:
+    - repo: ./tests/repo_rdiff1
+      src: ./tests/data
+    - repo: ./tests/missing/repo_rdiff2
+      src: ./tests/data
+
+# Backup this current yaml configurations file
+copy_backups:
+  - src: ./tests/test.yml
+    dest: ./tests/repo_config/test.yml

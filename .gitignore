@@ -4,6 +4,10 @@
 # Project files
 backups.yml
 
+tests/data
+tests/repo*
+tests/missing
+
 # Default ignored files
 /shelf/
 /workspace.xml
