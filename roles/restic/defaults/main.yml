@@ -1,5 +1,5 @@
 ---
-skip_backup_if_repo_missing: False
+skip_backup_if_repo_missing: True
 
 restic_perform_check: False
 restic_perform_data_check: False
