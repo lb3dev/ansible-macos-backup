@@ -23,4 +23,6 @@ rdiff_backups:
 # Backup this current yaml configurations file
 copy_backups:
   - src: ./tests/test.yml
-    dest: ./tests/repo_config/test.yml
+    dest: ./tests/repo_config/
+  - src: ./tests/test.yml
+    dest: ./tests/missing/
