@@ -17,6 +17,7 @@
         RESTIC_REPOSITORY: "{{ repo }}"
         RESTIC_PASSWORD: "{{ password }}"
       register: cat_result
+      changed_when: cat_result.rc != 0
       failed_when: cat_result.rc != 0 and not ("no such file or directory" in cat_result.stderr)
 
     - name: "{{ repo }}: Create repo if it doesn't exist"
@@ -43,6 +44,7 @@
         RESTIC_PASSWORD: "{{ password }}"
       register: check_result
       when: restic_perform_check
+      changed_when: check_result.rc != 0
       failed_when: check_result.rc != 0
 
     - name: "{{ repo }}: Check repo data"
