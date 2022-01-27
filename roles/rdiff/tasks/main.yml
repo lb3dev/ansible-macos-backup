@@ -1,4 +1,17 @@
 ---
+- name: "Append excludes list"
+  set_fact:
+    rdiff_excludes_params: "{{ rdiff_excludes_params | default([]) + [' '.join(('--exclude', item))] }}"
+  loop: "{{ rdiff_excludes_default | default([]) }}"
+
+- name: "Set excludes parameter"
+  set_fact:
+    rdiff_excludes_params: "{{ rdiff_excludes_params | default([]) | join(' ') }}"
+
+- name: "Show excludes parameter"
+  debug:
+    msg: "{{ rdiff_excludes_params }}"
+
 - include_tasks: local_backup.yml
   vars:
     repo: "{{ item.repo }}"
