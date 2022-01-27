@@ -16,14 +16,28 @@
         path: "{{ repo }}"
       register: repo_result
 
-    - name: "{{ repo }}: Verify repo"
-      shell: rdiff-backup --verify {{ repo }}
-      register: verify_result
+    - name: "{{ repo }}: Compare"
+      shell: rdiff-backup --compare {{ src }} {{ repo }}
+      register: compare_result
+      changed_when: False
+      failed_when: False
       when: repo_result.stat.exists
-      failed_when: verify_result.rc != 0
+
+    - name: "{{ repo }}: Diff"
+      debug:
+        msg: "{{ compare_result.stdout_lines | default('') }}"
+      when: compare_result.stdout_lines is defined
 
     - name: "{{ repo }}: Backup"
       shell: rdiff-backup {{ src }} {{ repo }}
       register: backup_result
       failed_when: backup_result.rc != 0
+      when: not (compare_result.stdout_lines is defined and compare_result.stdout_lines is search('No changes found'))
+
+    - name: "{{ repo }}: Verify"
+      shell: rdiff-backup --verify {{ repo }}
+      register: verify_result
+      changed_when: verify_result.rc != 0
+      failed_when: verify_result.rc != 0
+      when: backup_result.rc is defined and backup_result.rc == 0
   when: repo_base_result.stat.exists or (not repo_base_result.stat.exists and not skip_backup_if_repo_missing)
