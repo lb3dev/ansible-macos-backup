@@ -1,5 +1,0 @@
----
-backup_packages: [
-  "rdiff-backup",
-  "restic"
-]

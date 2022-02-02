@@ -1,7 +1,6 @@
 ---
 - hosts: all
   roles:
-    - packages
     - restic
     - rdiff
     - copy
