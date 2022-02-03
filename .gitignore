@@ -3,6 +3,7 @@
 
 # Project files
 backups.yml
+vault
 
 tests/data
 tests/repo*
