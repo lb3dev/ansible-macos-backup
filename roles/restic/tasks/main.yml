@@ -1,10 +1,10 @@
 ---
-- include_tasks: local_backup.yml
+- include_tasks: restic_backup.yml
   vars:
     repo: "{{ item.repo }}"
     repo_base: "{{ item.repo | dirname }}"
     src: "{{ item.src }}"
     password: "{{ item.password }}"
   with_items:
-    "{{ restic_backups['local_backups'] | default([]) }}"
+    "{{ restic_backups | default([]) }}"
   when: (item.repo is defined) and (item.src is defined) and (item.password is defined)

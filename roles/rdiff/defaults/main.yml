@@ -1,8 +1,7 @@
 ---
 skip_backup_if_repo_missing: True
 
-rdiff_backups:
-  local_backups:
-
 rdiff_excludes_default:
   - '**.DS_Store'
+
+rdiff_backups:

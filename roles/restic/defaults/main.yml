@@ -5,4 +5,3 @@ restic_perform_check: False
 restic_perform_data_check: False
 
 restic_backups:
-  local_backups:
