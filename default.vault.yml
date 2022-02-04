@@ -5,18 +5,16 @@ restic_perform_check: True
 restic_perform_data_check: False
 
 restic_backups:
-  local_backups:
-#    - repo: /repo
-#      src: /data
-#      password: INSERT_YOUR_PASSWORD
-#    - repo: /another
-#      src: /data
-#      password: INSERT_YOUR_PASSWORD
+#  - repo: /repo
+#    src: /data
+#    password: INSERT_YOUR_PASSWORD
+#  - repo: /another
+#    src: /data
+#    password: INSERT_YOUR_PASSWORD
 
 rdiff_backups:
-  local_backups:
-#    - repo: /backup
-#      src: /data
+#  - repo: /backup
+#    src: /data
 
 copy_backups:
 #  - src: /file
