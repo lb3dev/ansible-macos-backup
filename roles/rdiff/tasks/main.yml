@@ -1,12 +1,12 @@
 ---
 - name: "Append excludes list"
   set_fact:
-    rdiff_excludes_params: "{{ rdiff_excludes_params | default([]) + [' '.join(('--exclude', item))] }}"
+    rdiff_excludes_params_list: "{{ rdiff_excludes_params_list | default([]) + [' '.join(('--exclude', item))] }}"
   loop: "{{ rdiff_excludes_default | default([]) }}"
 
 - name: "Set excludes parameter"
   set_fact:
-    rdiff_excludes_params: "{{ rdiff_excludes_params | default([]) | join(' ') }}"
+    rdiff_excludes_params: "{{ rdiff_excludes_params_list | default([]) | join(' ') }}"
 
 - name: "Show excludes parameter"
   debug:
