@@ -1,0 +1,5 @@
+---
+- hosts: all
+  tasks:
+    - import_tasks: test-rdiff.yml
+    - import_tasks: test-rdiff-skip-no-repo.yml

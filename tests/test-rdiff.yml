@@ -1,0 +1,95 @@
+---
+- set_fact:
+    rdiff_backups:
+      - repo: test-repo-rdiff
+        src: data
+    skip_backup_if_repo_missing: False
+
+- name: Create test data directory
+  file:
+    path: data
+    state: directory
+
+- name: Create data files
+  file:
+    path: data/data1.txt
+    state: touch
+
+- include_role:
+    name: roles/rdiff
+    tasks_from: main
+
+- name: Ensure rdiff backup directory is created
+  stat:
+    path: test-repo-rdiff
+  register: rdiff_result
+
+- name: Ensure rdiff backup directory is created
+  assert:
+    that:
+      - rdiff_result.stat.exists and rdiff_result.stat.isdir is defined and rdiff_result.stat.isdir
+
+- name: List increments
+  shell: rdiff-backup -l test-repo-rdiff
+  register: rdiff_increments_result
+
+- name: Ensure no increments
+  assert:
+    that:
+      - rdiff_increments_result.stdout_lines | length == 2
+      - "'Found 0 increments:' in rdiff_increments_result.stdout_lines[0]"
+
+- name: Ensure data is backed up
+  stat:
+    path: test-repo-rdiff/data1.txt
+  register: rdiff_data1_result
+
+- name: Ensure data is backed up
+  assert:
+    that:
+      - rdiff_data1_result.stat.exists
+
+- include_role:
+    name: roles/rdiff
+    tasks_from: main
+
+- name: List increments
+  shell: rdiff-backup -l test-repo-rdiff
+  register: rdiff_increments_result
+
+- name: Ensure no increments with no changes
+  assert:
+    that:
+      - rdiff_increments_result.stdout_lines | length == 2
+      - "'Found 0 increments:' in rdiff_increments_result.stdout_lines[0]"
+
+- name: Create data files
+  file:
+    path: data/data2.txt
+    state: touch
+
+- include_role:
+    name: roles/rdiff
+    tasks_from: main
+
+- name: List increments
+  shell: rdiff-backup -l test-repo-rdiff
+  register: rdiff_increments_result
+
+- name: Ensure new increment added
+  assert:
+    that:
+      - rdiff_increments_result.stdout_lines | length == 3
+      - "'Found 1 increments:' in rdiff_increments_result.stdout_lines[0]"
+
+- name: Ensure new data is backed up
+  stat:
+    path: test-repo-rdiff/data2.txt
+  register: rdiff_data2_result
+
+- name: Ensure data is backed up
+  assert:
+    that:
+      - rdiff_data2_result.stat.exists
+
+- import_tasks: test-cleanup.yml
