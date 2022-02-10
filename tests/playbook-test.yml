@@ -3,3 +3,4 @@
   tasks:
     - import_tasks: test-rdiff.yml
     - import_tasks: test-rdiff-skip-no-repo.yml
+    - import_tasks: test_rdiff_default_excludes.yml
