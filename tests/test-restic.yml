@@ -1,0 +1,44 @@
+---
+- set_fact:
+    restic_backups:
+      - repo: test-repo-restic
+        src: data
+    restic_password: 'abc123!'
+    skip_backup_if_repo_missing: False
+
+- name: Create test data directory
+  file:
+    path: data
+    state: directory
+
+- name: Create data files
+  file:
+    path: data/data1.txt
+    state: touch
+
+- include_role:
+    name: roles/restic
+    tasks_from: main
+
+- name: Ensure restic backup directory is created
+  stat:
+    path: test-repo-restic
+  register: restic_result
+
+- name: Ensure restic backup directory is created
+  assert:
+    that:
+      - restic_result.stat.exists and restic_result.stat.isdir is defined and restic_result.stat.isdir
+
+- name: List snapshots
+  shell: restic -r test-repo-restic snapshots
+  environment:
+    RESTIC_PASSWORD: "{{ restic_password }}"
+  register: restic_snapshots_result
+
+- name: Ensure new snapshot added
+  assert:
+    that:
+      - "'1 snapshots' in (restic_snapshots_result.stdout_lines | last)"
+
+- import_tasks: test-cleanup.yml

@@ -3,17 +3,18 @@ skip_backup_if_repo_missing: False
 
 restic_perform_check: True
 restic_perform_data_check: False
+restic_password: ''
 
 restic_backups:
-#  - repo: /repo
+#  - repo: /backup
 #    src: /data
-#    password: INSERT_YOUR_PASSWORD
-#  - repo: /another
+#  - repo: /restic
 #    src: /data
-#    password: INSERT_YOUR_PASSWORD
 
 rdiff_backups:
 #  - repo: /backup
+#    src: /data
+#  - repo: /rdiff
 #    src: /data
 
 copy_backups:

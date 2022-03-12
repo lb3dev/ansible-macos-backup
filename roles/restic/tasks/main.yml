@@ -4,7 +4,6 @@
     repo: "{{ item.repo }}"
     repo_base: "{{ item.repo | dirname }}"
     src: "{{ item.src }}"
-    password: "{{ item.password }}"
   with_items:
     "{{ restic_backups | default([]) }}"
-  when: (item.repo is defined) and (item.src is defined) and (item.password is defined)
+  when: (item.repo is defined) and (item.src is defined)
