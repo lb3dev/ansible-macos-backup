@@ -28,10 +28,22 @@
       when: cat_result.rc == 1 and ("no such file or directory" in cat_result.stderr)
 
     - name: "{{ repo }}: Backup"
-      shell: restic backup {{ src }}
+      shell: restic -vv --json backup {{ src }} | jq -rc 'select(.message_type == "verbose_status" and .action != "unchanged")'
       environment:
         RESTIC_REPOSITORY: "{{ repo }}"
         RESTIC_PASSWORD: "{{ restic_password }}"
+      register: backup_result
+
+    - name: "{{ repo }}: Parse backup output"
+      vars:
+        restic_status: "{{ item | from_json }}"
+      set_fact:
+        restic_diffs: "{{ restic_diffs | default([]) + [restic_status.action + ': ' + restic_status.item] }}"
+      with_items: "{{ backup_result.stdout_lines | default([]) }}"
+
+    - name: "{{ repo }}: Diff"
+      debug:
+        msg: "{{ restic_diffs }}"
 
     - name: "{{ repo }}: Check repo metadata"
       shell: restic check
