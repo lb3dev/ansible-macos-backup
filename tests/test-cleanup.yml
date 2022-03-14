@@ -11,6 +11,8 @@
     path: "{{ item.path }}"
     state: absent
   with_items: "{{ find_result.files | default([]) }}"
+  loop_control:
+    label: "{{ item.path }}"
 
 - name: Remove test data directory
   file:
