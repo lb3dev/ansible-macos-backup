@@ -3,10 +3,6 @@
   set_fact:
     rdiff_excludes_params: "{{ ['--exclude '] | product(rdiff_excludes_default) | map('join') | list | join(' ') }}"
 
-- name: "Show excludes parameter"
-  debug:
-    msg: "{{ rdiff_excludes_params }}"
-
 - include_tasks: rdiff_backup.yml
   vars:
     repo: "{{ item.repo }}"

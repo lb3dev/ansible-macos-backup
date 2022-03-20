@@ -1,0 +1,54 @@
+---
+- set_fact:
+    rdiff_backups:
+      - repo: test-repo-rdiff
+        src: data
+    skip_backup_if_repo_missing: False
+
+- name: Create test data directory
+  file:
+    path: data
+    state: directory
+
+- name: Create data files
+  file:
+    path: data/data1.txt
+    state: touch
+
+- include_role:
+    name: roles/rdiff
+    tasks_from: main
+
+- name: Ensure default .DS_Store exclude parameter is set
+  assert:
+    that:
+      - rdiff_excludes_params == '--exclude "**.DS_Store"'
+
+- set_fact:
+    rdiff_excludes_default: []
+
+- include_role:
+    name: roles/rdiff
+    tasks_from: main
+
+- name: Ensure empty exclude parameter is set
+  assert:
+    that:
+      - rdiff_excludes_params == ''
+
+- set_fact:
+    rdiff_excludes_default:
+      - '"**.DS_Store"'
+      - '"**.git"'
+      - '"**.ssh"'
+
+- include_role:
+    name: roles/rdiff
+    tasks_from: main
+
+- name: Ensure multiple excludes parameter is set
+  assert:
+    that:
+      - rdiff_excludes_params == '--exclude "**.DS_Store" --exclude "**.git" --exclude "**.ssh"'
+
+- import_tasks: test-cleanup.yml
