@@ -1,4 +1,8 @@
 ---
+- name: "{{ repo }}: Reset diff output list"
+  set_fact:
+    restic_diffs: []
+
 - name: "{{ repo }}: Check src folder {{ src }}"
   stat:
     path: "{{ src }}"
