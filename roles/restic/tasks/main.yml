@@ -1,4 +1,8 @@
 ---
+- name: "Set excludes parameter"
+  set_fact:
+    restic_excludes_params: "{{ ['--exclude='] | product(restic_excludes_default) | map('join') | list | join(' ') }}"
+
 - include_tasks: restic_backup.yml
   vars:
     repo: "{{ item.repo }}"

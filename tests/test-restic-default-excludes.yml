@@ -1,0 +1,69 @@
+---
+- set_fact:
+    restic_backups:
+      - repo: test-repo-restic
+        src: data
+    restic_password: 'abc123!'
+    skip_backup_if_repo_missing: False
+
+- name: Create test data directory
+  file:
+    path: data
+    state: directory
+
+- name: Create data files
+  file:
+    path: data/data1.txt
+    state: touch
+
+- name: Create .DS_Store
+  file:
+    path: data/.DS_Store
+    state: touch
+
+- name: Create data directories
+  file:
+    path: data/sub-data
+    state: directory
+
+- name: Create data files
+  file:
+    path: data/sub-data/data2.txt
+    state: touch
+
+- name: Create sub .DS_Store
+  file:
+    path: data/sub-data/.DS_Store
+    state: touch
+
+- include_role:
+    name: roles/restic
+    tasks_from: main
+
+- name: Restore from backup repo
+  shell: restic restore latest --target test-repo-restic-restore
+  environment:
+    RESTIC_REPOSITORY: test-repo-restic
+    RESTIC_PASSWORD: "{{ restic_password }}"
+
+- name: Ensure .DS_Store is not in main data directory
+  stat:
+    path: test-repo-restic-restore/data/.DS_Store
+  register: ds_result
+
+- name: Ensure .DS_Store is not in main data directory
+  assert:
+    that:
+      - not ds_result.stat.exists
+
+- name: Ensure .DS_Store is not in sub data directory
+  stat:
+    path: test-repo-restic-restore/data/sub-data/.DS_Store
+  register: ds_sub_result
+
+- name: Ensure .DS_Store is not in sub data directory
+  assert:
+    that:
+      - not ds_sub_result.stat.exists
+
+- import_tasks: test-cleanup.yml
