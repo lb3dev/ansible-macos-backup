@@ -32,7 +32,7 @@
       when: cat_result.rc == 1 and ("no such file or directory" in cat_result.stderr)
 
     - name: "{{ repo }}: Backup"
-      shell: restic {{ restic_excludes_params }} -vv --json backup {{ src }} | jq -rc 'select(.message_type == "verbose_status" and .action != "unchanged")'
+      shell: restic -vv --json backup --ignore-ctime --ignore-inode {{ restic_excludes_params }} {{ src }} | jq -rc 'select(.message_type == "verbose_status" and .action != "unchanged")'
       environment:
         RESTIC_REPOSITORY: "{{ repo }}"
         RESTIC_PASSWORD: "{{ restic_password }}"
