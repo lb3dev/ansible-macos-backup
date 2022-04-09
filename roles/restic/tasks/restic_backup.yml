@@ -40,10 +40,12 @@
 
     - name: "{{ repo }}: Parse backup output"
       vars:
-        restic_status: "{{ item | from_json }}"
+        restic_status: "{{ restic_stdout_line | from_json }}"
       set_fact:
         restic_diffs: "{{ restic_diffs | default([]) + [restic_status.action + ': ' + restic_status.item] }}"
       with_items: "{{ backup_result.stdout_lines | default([]) }}"
+      loop_control:
+        loop_var: restic_stdout_line
 
     - name: "{{ repo }}: Diff"
       debug:
