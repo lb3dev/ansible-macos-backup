@@ -3,3 +3,6 @@ backup:
 
 test:
 		ansible-playbook tests/playbook-test.yml
+
+edit:
+		ansible-vault edit vault
