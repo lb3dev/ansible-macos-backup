@@ -1,5 +1,7 @@
 ---
 - hosts: all
+  vars_files:
+    - ../default.config.yml
   tasks:
     - import_tasks: test-restic.yml
     - import_tasks: test-restic-exclude-parameters.yml

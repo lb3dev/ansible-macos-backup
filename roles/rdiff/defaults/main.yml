@@ -1,6 +1,4 @@
 ---
-skip_backup_if_repo_missing: True
-
 rdiff_excludes_default:
   - '"**.DS_Store"'
 
