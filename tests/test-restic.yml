@@ -4,7 +4,6 @@
       - repo: test-repo-restic
         src: data
     restic_password: 'abc123!'
-    skip_backup_if_repo_missing: False
 
 - name: Create test data directory
   file:

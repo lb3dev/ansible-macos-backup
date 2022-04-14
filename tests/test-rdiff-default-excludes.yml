@@ -3,7 +3,6 @@
     rdiff_backups:
       - repo: test-repo-rdiff
         src: data
-    skip_backup_if_repo_missing: False
 
 - name: Create test data directory
   file:
