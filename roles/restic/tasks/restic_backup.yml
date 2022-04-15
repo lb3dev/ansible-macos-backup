@@ -31,25 +31,31 @@
         RESTIC_PASSWORD: "{{ restic_password }}"
       when: cat_result.rc == 1 and ("no such file or directory" in cat_result.stderr)
 
-    - name: "{{ repo }}: Backup"
-      shell: restic -vv --json backup {{ restic_excludes_params }} {{ src }} | jq -rc 'select(.message_type == "verbose_status" and .action != "unchanged")'
+    - name: "{{ repo }}: Dry run"
+      shell: restic -vv --json backup --dry-run {{ restic_excludes_params }} {{ src }} | jq -rc 'select(.message_type == "verbose_status" and .action != "unchanged")'
       environment:
         RESTIC_REPOSITORY: "{{ repo }}"
         RESTIC_PASSWORD: "{{ restic_password }}"
-      register: backup_result
+      register: dryrun_result
 
-    - name: "{{ repo }}: Parse backup output"
+    - name: "{{ repo }}: Parse dry run output"
       vars:
         restic_status: "{{ restic_stdout_line | from_json }}"
       set_fact:
         restic_diffs: "{{ restic_diffs | default([]) + [restic_status.action + ': ' + restic_status.item] }}"
-      with_items: "{{ backup_result.stdout_lines | default([]) }}"
+      with_items: "{{ dryrun_result.stdout_lines | default([]) }}"
       loop_control:
         loop_var: restic_stdout_line
 
     - name: "{{ repo }}: Diff"
       debug:
         msg: "{{ restic_diffs }}"
+
+    - name: "{{ repo }}: Backup"
+      shell: restic backup {{ restic_excludes_params }} {{ src }}
+      environment:
+        RESTIC_REPOSITORY: "{{ repo }}"
+        RESTIC_PASSWORD: "{{ restic_password }}"
 
     - name: "{{ repo }}: Check repo metadata"
       shell: restic check
