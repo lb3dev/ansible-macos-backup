@@ -1,13 +1,16 @@
 ---
-- name: "Set excludes parameter"
-  set_fact:
-    rdiff_excludes_params: "{{ ['--exclude '] | product(rdiff_excludes_default) | map('join') | list | join(' ') }}"
+- block:
+  - name: "Set excludes parameter"
+    set_fact:
+      rdiff_excludes_params: "{{ ['--exclude '] | product(rdiff_excludes_default) | map('join') | list | join(' ') }}"
 
-- include_tasks: rdiff_backup.yml
-  vars:
-    repo: "{{ item.repo }}"
-    repo_base: "{{ item.repo | dirname }}"
-    src: "{{ item.src }}"
-  with_items:
-    "{{ rdiff_backups | default([]) }}"
-  when: (item.repo is defined) and (item.src is defined)
+  - include_tasks: rdiff_backup.yml
+    vars:
+      repo: "{{ item.repo }}"
+      repo_base: "{{ item.repo | dirname }}"
+      src: "{{ item.src }}"
+    with_items:
+      "{{ rdiff_backups | default([]) }}"
+    when: (item.repo is defined) and (item.src is defined)
+  tags:
+    - backup

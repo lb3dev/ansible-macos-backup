@@ -4,9 +4,16 @@
     - ../default.config.yml
   tasks:
     - import_tasks: test-restic.yml
+      tags: backup
     - import_tasks: test-restic-exclude-parameters.yml
+      tags: backup
     - import_tasks: test-restic-default-excludes.yml
+      tags: backup
     - import_tasks: test-rdiff.yml
+      tags: backup
     - import_tasks: test-rdiff-skip-no-repo.yml
+      tags: backup
     - import_tasks: test-rdiff-exclude-parameters.yml
+      tags: backup
     - import_tasks: test-rdiff-default-excludes.yml
+      tags: backup
