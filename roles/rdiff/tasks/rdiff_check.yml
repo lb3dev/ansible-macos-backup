@@ -1,5 +1,13 @@
 ---
+- name: "{{ repo }}: Check repo stats"
+  stat:
+    path: "{{ repo }}"
+  register: repo_result
+  tags:
+    - check
+
 - name: "{{ repo }}: Check repo data"
   shell: rdiff-backup --verify {{ repo }}
+  when: repo_result.stat.exists
   tags:
     - check

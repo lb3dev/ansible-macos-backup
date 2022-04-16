@@ -1,9 +1,17 @@
 ---
+- name: "{{ repo }}: Check repo stats"
+  stat:
+    path: "{{ repo }}"
+  register: repo_result
+  tags:
+    - check
+
 - name: "{{ repo }}: Check repo metadata"
   shell: restic check
   environment:
     RESTIC_REPOSITORY: "{{ repo }}"
     RESTIC_PASSWORD: "{{ restic_password }}"
+  when: repo_result.stat.exists
   tags:
     - check
 
@@ -12,5 +20,6 @@
   environment:
     RESTIC_REPOSITORY: "{{ repo }}"
     RESTIC_PASSWORD: "{{ restic_password }}"
+  when: repo_result.stat.exists
   tags:
     - check
