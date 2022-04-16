@@ -56,21 +56,5 @@
       environment:
         RESTIC_REPOSITORY: "{{ repo }}"
         RESTIC_PASSWORD: "{{ restic_password }}"
-
-    - name: "{{ repo }}: Check repo metadata"
-      shell: restic check
-      environment:
-        RESTIC_REPOSITORY: "{{ repo }}"
-        RESTIC_PASSWORD: "{{ restic_password }}"
-      register: check_result
-      when: restic_perform_check
-      changed_when: check_result.rc != 0
-
-    - name: "{{ repo }}: Check repo data"
-      shell: restic check --read-data
-      environment:
-        RESTIC_REPOSITORY: "{{ repo }}"
-        RESTIC_PASSWORD: "{{ restic_password }}"
-      when: restic_perform_data_check
   when: repo_base_result.stat.exists or (not repo_base_result.stat.exists and not skip_backup_if_repo_missing)
 

@@ -30,12 +30,5 @@
 
     - name: "{{ repo }}: Backup"
       shell: rdiff-backup {{ rdiff_excludes_params }} {{ src }} {{ repo }}
-      register: backup_result
       when: not (compare_result.stdout_lines is defined and compare_result.stdout_lines is search('No changes found'))
-
-    - name: "{{ repo }}: Verify"
-      shell: rdiff-backup --verify {{ repo }}
-      register: verify_result
-      changed_when: verify_result.rc != 0
-      when: backup_result.rc is defined and backup_result.rc == 0
   when: repo_base_result.stat.exists or (not repo_base_result.stat.exists and not skip_backup_if_repo_missing)

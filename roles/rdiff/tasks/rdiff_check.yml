@@ -1,0 +1,5 @@
+---
+- name: "{{ repo }}: Check repo data"
+  shell: rdiff-backup --verify {{ repo }}
+  tags:
+    - check

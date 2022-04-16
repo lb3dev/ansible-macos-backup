@@ -1,0 +1,16 @@
+---
+- name: "{{ repo }}: Check repo metadata"
+  shell: restic check
+  environment:
+    RESTIC_REPOSITORY: "{{ repo }}"
+    RESTIC_PASSWORD: "{{ restic_password }}"
+  tags:
+    - check
+
+- name: "{{ repo }}: Check repo data"
+  shell: restic check --read-data
+  environment:
+    RESTIC_REPOSITORY: "{{ repo }}"
+    RESTIC_PASSWORD: "{{ restic_password }}"
+  tags:
+    - check
