@@ -4,6 +4,9 @@ backup:
 check:
 		ansible-playbook playbook-backup.yml --tags "check" --extra-vars "@vault" --ask-vault-pass
 
+all:
+		ansible-playbook playbook-backup.yml --tags "backup,check" --extra-vars "@vault" --ask-vault-pass
+
 test:
 		ansible-playbook tests/playbook-test.yml --skip-tags "check"
 
