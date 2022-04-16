@@ -2,4 +2,8 @@
 rdiff_excludes_default:
   - '"**.DS_Store"'
 
-rdiff_backups:
+rdiff_backups: []
+#  - repo: /backup
+#    src: /data
+#  - repo: /rdiff
+#    src: /data

@@ -2,4 +2,8 @@
 restic_excludes_default:
   - '"*.DS_Store"'
 
-restic_backups:
+restic_backups: []
+#  - repo: /backup
+#    src: /data
+#  - repo: /restic
+#    src: /data

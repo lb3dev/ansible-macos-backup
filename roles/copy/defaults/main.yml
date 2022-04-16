@@ -1,2 +1,4 @@
 ---
-copy_backups:
+copy_backups: []
+#  - src: /file
+#    dest: /copy/file
