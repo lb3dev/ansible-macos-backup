@@ -39,13 +39,8 @@
       register: dryrun_result
 
     - name: "{{ repo }}: Parse dry run output"
-      vars:
-        restic_status: "{{ restic_stdout_line | from_json }}"
       set_fact:
-        restic_diffs: "{{ restic_diffs | default([]) + [restic_status.action + ': ' + restic_status.item] }}"
-      with_items: "{{ dryrun_result.stdout_lines | default([]) }}"
-      loop_control:
-        loop_var: restic_stdout_line
+        restic_diffs: "{{ dryrun_result.stdout_lines | default([]) | map('from_json') | list | sort(attribute='action') | map('restic_status') | list }}"
 
     - name: "{{ repo }}: Diff"
       debug:
