@@ -46,10 +46,17 @@
       debug:
         msg: "{{ restic_diffs }}"
 
+    - name: "{{ repo }}: Confirm"
+      pause:
+        prompt: "Proceed with backup? (Y/n)"
+      register: restic_confirm
+      when: interactive_mode
+
     - name: "{{ repo }}: Backup"
       shell: restic backup {{ restic_excludes_params }} {{ src }}
       environment:
         RESTIC_REPOSITORY: "{{ repo }}"
         RESTIC_PASSWORD: "{{ restic_password }}"
+      when: not interactive_mode or (interactive_mode and restic_confirm.user_input | lower == 'y')
   when: repo_base_result.stat.exists or (not repo_base_result.stat.exists and not skip_backup_if_repo_missing)
 

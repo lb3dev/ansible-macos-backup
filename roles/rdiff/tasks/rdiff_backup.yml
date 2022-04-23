@@ -28,7 +28,15 @@
         msg: "{{ compare_result.stdout_lines | default('') }}"
       when: compare_result.stdout_lines is defined
 
+    - name: "{{ repo }}: Confirm"
+      pause:
+        prompt: "Proceed with backup? (Y/n)"
+      register: rdiff_confirm
+      when: interactive_mode
+
     - name: "{{ repo }}: Backup"
       shell: rdiff-backup {{ rdiff_excludes_params }} {{ src }} {{ repo }}
-      when: not (compare_result.stdout_lines is defined and compare_result.stdout_lines is search('No changes found'))
+      when:
+        - not (compare_result.stdout_lines is defined and compare_result.stdout_lines is search('No changes found'))
+        - not interactive_mode or (interactive_mode and rdiff_confirm.user_input | lower == 'y')
   when: repo_base_result.stat.exists or (not repo_base_result.stat.exists and not skip_backup_if_repo_missing)

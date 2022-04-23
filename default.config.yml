@@ -1,2 +1,3 @@
 ---
 skip_backup_if_repo_missing: False
+interactive_mode: False
