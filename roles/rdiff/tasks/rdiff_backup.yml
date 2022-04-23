@@ -26,7 +26,6 @@
     - name: "{{ repo }}: Diff"
       debug:
         msg: "{{ compare_result.stdout_lines | default('') }}"
-      when: compare_result.stdout_lines is defined
 
     - name: "{{ repo }}: Confirm"
       pause:
