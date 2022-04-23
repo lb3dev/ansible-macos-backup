@@ -19,8 +19,8 @@
     - name: "{{ repo }}: Compare"
       shell: rdiff-backup {{ rdiff_excludes_params }} --compare {{ src }} {{ repo }}
       register: compare_result
-      changed_when: False
-      failed_when: False
+      changed_when: false
+      failed_when: false
       when: repo_result.stat.exists
 
     - name: "{{ repo }}: Diff"
