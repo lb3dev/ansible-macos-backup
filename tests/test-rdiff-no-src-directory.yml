@@ -1,0 +1,21 @@
+---
+- set_fact:
+    rdiff_backups:
+      - repo: test-repo-rdiff
+        src: mssing-data
+
+- include_role:
+    name: roles/rdiff
+    tasks_from: main
+
+- name: Check repo status
+  stat:
+    path: test-repo-rdiff
+  register: rdiff_result
+
+- name: Ensure rdiff backup directory is not created
+  assert:
+    that:
+      - not rdiff_result.stat.exists
+
+- import_tasks: test-cleanup.yml

@@ -1,0 +1,31 @@
+---
+- set_fact:
+    rdiff_backups:
+      - repo: test-repo-rdiff
+        src: data/data1.txt
+
+- name: Create test data directory
+  file:
+    path: data
+    state: directory
+
+- name: Create data files
+  file:
+    path: data/data1.txt
+    state: touch
+
+- include_role:
+    name: roles/rdiff
+    tasks_from: main
+
+- name: Check repo status
+  stat:
+    path: test-repo-rdiff
+  register: rdiff_result
+
+- name: Ensure rdiff backup directory is not created
+  assert:
+    that:
+      - not rdiff_result.stat.exists
+
+- import_tasks: test-cleanup.yml

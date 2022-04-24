@@ -7,7 +7,6 @@
   stat:
     path: "{{ src }}"
   register: src_result
-  failed_when: not (src_result.stat.exists and src_result.stat.isdir is defined and src_result.stat.isdir)
 
 - name: "{{ repo }}: Check repo base folder {{ repo_base }}"
   stat:
@@ -58,4 +57,6 @@
         RESTIC_REPOSITORY: "{{ repo }}"
         RESTIC_PASSWORD: "{{ restic_password }}"
       when: not interactive_mode or (interactive_mode and restic_confirm.user_input | lower == 'y')
-  when: repo_base_result.stat.exists or (not repo_base_result.stat.exists and not skip_backup_if_repo_missing)
+  when:
+    - repo_base_result.stat.exists or (not repo_base_result.stat.exists and not skip_backup_if_repo_missing)
+    - src_result.stat.exists

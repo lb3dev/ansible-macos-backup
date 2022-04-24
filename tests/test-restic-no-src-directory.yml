@@ -1,0 +1,22 @@
+---
+- set_fact:
+    restic_backups:
+      - repo: test-repo-restic
+        src: missing-data
+    restic_password: 'abc123!'
+
+- include_role:
+    name: roles/restic
+    tasks_from: main
+
+- name: Check repo status
+  stat:
+    path: test-repo-restic
+  register: restic_result
+
+- name: Ensure restic backup directory is not created
+  assert:
+    that:
+      - not restic_result.stat.exists
+
+- import_tasks: test-cleanup.yml

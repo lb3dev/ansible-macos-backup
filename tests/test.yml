@@ -1,0 +1,6 @@
+---
+- hosts: all
+  vars_files:
+    - ../default.config.yml
+  tasks:
+#    - import_tasks: test-rdiff.yml
