@@ -1,0 +1,66 @@
+---
+- name: "KeepassXC: Set export filename"
+  set_fact:
+    keepassxc_export_file: "{{ keepassxc_file | dirname }}/{{ keepassxc_file | basename }}.xml"
+
+- name: "KeepassXC: Exporting {{ keepassxc_file }} to {{ keepassxc_export_file }}"
+  expect:
+    command: '/bin/bash -c "keepassxc-cli export {{ keepassxc_file }} > {{ keepassxc_export_file }}"'
+    responses:
+      'Enter password to unlock .*': "{{ keepassxc_password }}"
+  no_log: true
+
+- name: "Bitwarden: Check status"
+  command: bw status
+  register: bw_status
+
+- name: "Bitwarden: Set status variables"
+  set_fact:
+    bitwarden_status: "{{ bw_status.stdout | from_json | json_query('status') }}"
+    bitwarden_existing_user: "{{ bw_status.stdout | from_json | json_query('userEmail') }}"
+
+- name: "Bitwarden: Logout existing user {{ bitwarden_existing_user }}"
+  command: bw logout
+  when: bitwarden_status != 'unauthenticated'
+
+- name: "Bitwarden: Login"
+  command: bw login --apikey
+  environment:
+    BW_CLIENTID: "{{ bitwarden_client_id }}"
+    BW_CLIENTSECRET: "{{ bitwarden_client_secret }}"
+
+- name: "Bitwarden: Unlock and retrieve session key"
+  command: bw unlock --raw --passwordenv BW_PASSWORD
+  environment:
+    BW_PASSWORD: "{{ bitwarden_password }}"
+  register: bw_unlock
+
+- name: "Bitwarden: Set session key"
+  set_fact:
+    bitwarden_session_key: "{{ bw_unlock.stdout }}"
+
+- name: "Bitwarden: Sync"
+  command: bw sync
+  environment:
+    BW_SESSION: "{{ bitwarden_session_key }}"
+  register: bw_unlock
+
+- name: "Bitwarden: Delete existing repository"
+  script: files/bitwarden-delete.sh
+  environment:
+    BW_SESSION: "{{ bitwarden_session_key }}"
+  register: bw_delete
+
+- name: "Bitwarden: Show delete output"
+  debug:
+    msg: "{{ bw_delete.stdout_lines }}"
+
+- name: "Bitwarden: Import KeepassXC export file {{ keepassxc_export_file }}"
+  command: bw import keepass2xml {{ keepassxc_export_file }}
+  environment:
+    BW_SESSION: "{{ bitwarden_session_key }}"
+
+- name: "KeepassXC: Delete export file {{ keepassxc_export_file }}"
+  file:
+    path: "{{ keepassxc_export_file }}"
+    state: absent

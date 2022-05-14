@@ -7,6 +7,9 @@ check:
 all:
 		ansible-playbook playbook-backup.yml --tags "backup,check" --extra-vars "@vault" --ask-vault-pass
 
+bw:
+		ansible-playbook playbook-bitwarden.yml --extra-vars "@vault" --ask-vault-pass
+
 test:
 		ansible-playbook tests/test.yml --skip-tags "check"
 
@@ -15,3 +18,6 @@ test-all:
 
 edit:
 		ansible-vault edit vault
+
+lint:
+		yamllint .
