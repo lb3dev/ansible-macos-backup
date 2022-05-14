@@ -1,0 +1,33 @@
+---
+- include_tasks: bitwarden_session.yml
+
+- name: "Bitwarden: Delete existing repository"
+  script: files/bitwarden-delete.sh
+  environment:
+    BW_SESSION: "{{ bitwarden_session_key }}"
+  register: bw_delete
+
+- name: "Bitwarden: Show delete output"
+  debug:
+    msg: "{{ bw_delete.stdout_lines }}"
+
+- name: "KeepassXC: Set export filename"
+  set_fact:
+    keepassxc_export_file: "{{ keepassxc_file | dirname }}/{{ keepassxc_file | basename }}.xml"
+
+- name: "KeepassXC: Exporting {{ keepassxc_file }} to {{ keepassxc_export_file }}"
+  expect:
+    command: '/bin/bash -c "keepassxc-cli export {{ keepassxc_file }} > {{ keepassxc_export_file }}"'
+    responses:
+      'Enter password to unlock .*': "{{ keepassxc_password }}"
+  no_log: true
+
+- name: "Bitwarden: Import KeepassXC export file {{ keepassxc_export_file }}"
+  command: bw import keepass2xml {{ keepassxc_export_file }}
+  environment:
+    BW_SESSION: "{{ bitwarden_session_key }}"
+
+- name: "KeepassXC: Delete export file {{ keepassxc_export_file }}"
+  file:
+    path: "{{ keepassxc_export_file }}"
+    state: absent

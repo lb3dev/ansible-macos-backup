@@ -1,0 +1,34 @@
+---
+- name: "Bitwarden: Check status"
+  command: bw status
+  register: bw_status
+
+- name: "Bitwarden: Set status variables"
+  set_fact:
+    bitwarden_status: "{{ bw_status.stdout | from_json | json_query('status') }}"
+    bitwarden_existing_user: "{{ bw_status.stdout | from_json | json_query('userEmail') }}"
+
+- name: "Bitwarden: Logout existing user {{ bitwarden_existing_user }}"
+  command: bw logout
+  when: bitwarden_status != 'unauthenticated'
+
+- name: "Bitwarden: Login"
+  command: bw login --apikey
+  environment:
+    BW_CLIENTID: "{{ bitwarden_client_id }}"
+    BW_CLIENTSECRET: "{{ bitwarden_client_secret }}"
+
+- name: "Bitwarden: Unlock and retrieve session key"
+  command: bw unlock --raw --passwordenv BW_PASSWORD
+  environment:
+    BW_PASSWORD: "{{ bitwarden_password }}"
+  register: bw_unlock
+
+- name: "Bitwarden: Set session key"
+  set_fact:
+    bitwarden_session_key: "{{ bw_unlock.stdout }}"
+
+- name: "Bitwarden: Sync"
+  command: bw sync
+  environment:
+    BW_SESSION: "{{ bitwarden_session_key }}"

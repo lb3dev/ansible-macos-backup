@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Script to export an existing KeepassXC .kdbx vault file and import to Bitwarden via CLI tools
+# Script to delete the entire Bitwarden repository without the Untitled folder
 # Sample usage:
 #
-# ./keepassxc-bitwarden-import.sh /path/to/db.kdbx.export_file
+# ./bitwarden-delete.sh
 #
 # WARNING: THIS WILL FIRST REMOVE ALL ITEMS IN BITWARDEN VAULT BEFORE IMPORT
 

@@ -3,4 +3,4 @@
   vars_files:
     - default.config.yml
   roles:
-    - keepassxc-bitwarden
+    - bitwarden
