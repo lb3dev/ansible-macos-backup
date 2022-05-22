@@ -19,10 +19,10 @@
     name: roles/restic
     tasks_from: main
 
-- name: Ensure default .DS_Store exclude parameter is set
+- name: Ensure default exclude parameters are set
   assert:
     that:
-      - restic_excludes_params == '--exclude="*.DS_Store"'
+      - restic_excludes_params == '--exclude="*.DS_Store" --exclude="*.Spotlight-V100" --exclude="*.fseventsd"'
 
 - set_fact:
     restic_excludes_default: []
