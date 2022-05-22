@@ -1,6 +1,8 @@
 ---
 rdiff_excludes_default:
   - '"**.DS_Store"'
+  - '"**.Spotlight-V100"'
+  - '"**.fseventsd"'
 
 rdiff_backups: []
 #  - repo: /backup

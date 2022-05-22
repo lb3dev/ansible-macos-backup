@@ -1,6 +1,8 @@
 ---
 restic_excludes_default:
   - '"*.DS_Store"'
+  - '"*.Spotlight-V100"'
+  - '"*.fseventsd"'
 
 restic_backups: []
 #  - repo: /backup
