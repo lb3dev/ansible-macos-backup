@@ -21,7 +21,8 @@
 - name: Ensure default .DS_Store exclude parameter is set
   assert:
     that:
-      - rdiff_excludes_params == '--exclude "**.DS_Store" --exclude "**.Spotlight-V100" --exclude "**.fseventsd"'
+      - rdiff_excludes_params == '--exclude "**.DS_Store"
+       --exclude "**.Spotlight-V100" --exclude "**.fseventsd" --exclude "**.DocumentRevisions-V100" --exclude "**.TemporaryItems"'
 
 - set_fact:
     rdiff_excludes_default: []

@@ -22,7 +22,8 @@
 - name: Ensure default exclude parameters are set
   assert:
     that:
-      - restic_excludes_params == '--exclude="*.DS_Store" --exclude="*.Spotlight-V100" --exclude="*.fseventsd"'
+      - restic_excludes_params == '--exclude="*.DS_Store"
+       --exclude="*.Spotlight-V100" --exclude="*.fseventsd" --exclude="*.DocumentRevisions-V100" --exclude="*.TemporaryItems"'
 
 - set_fact:
     restic_excludes_default: []
