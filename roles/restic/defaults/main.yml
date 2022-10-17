@@ -5,6 +5,8 @@ restic_excludes_default:
   - '"*.fseventsd"'
   - '"*.DocumentRevisions-V100"'
   - '"*.TemporaryItems"'
+  - '"*.Trashes"'
+  - '"*.localized"'
 
 restic_backups: []
 #  - repo: /backup

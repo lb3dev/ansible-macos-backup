@@ -5,6 +5,8 @@ rdiff_excludes_default:
   - '"**.fseventsd"'
   - '"**.DocumentRevisions-V100"'
   - '"**.TemporaryItems"'
+  - '"**.Trashes"'
+  - '"**.localized"'
 
 rdiff_backups: []
 #  - repo: /backup
