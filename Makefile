@@ -1,23 +1,20 @@
 backup:
-		ansible-playbook playbook-backup.yml --tags "backup" --extra-vars "@vault" --ask-vault-pass
+		ansible-playbook playbook-backup.yml --tags "backup" --extra-vars "@config.yml"
 
 check:
-		ansible-playbook playbook-backup.yml --tags "check" --extra-vars "@vault" --ask-vault-pass
+		ansible-playbook playbook-backup.yml --tags "check" --extra-vars "@config.yml"
 
 all:
-		ansible-playbook playbook-backup.yml --tags "backup,check" --extra-vars "@vault" --ask-vault-pass
+		ansible-playbook playbook-backup.yml --tags "backup,check" --extra-vars "@config.yml"
 
 bw:
-		ansible-playbook playbook-bitwarden.yml --extra-vars "@vault" --ask-vault-pass
+		ansible-playbook playbook-bitwarden.yml --extra-vars "@config.yml"
 
 test:
 		ansible-playbook tests/test.yml --skip-tags "check"
 
 test-all:
 		ansible-playbook tests/playbook-test.yml --skip-tags "check"
-
-edit:
-		ansible-vault edit vault
 
 lint:
 		yamllint .
