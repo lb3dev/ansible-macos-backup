@@ -1,2 +1,4 @@
+ansible==6.5.0
+ansible-core==2.13.5
 yamllint==1.27.1
 pexpect==4.8.0
