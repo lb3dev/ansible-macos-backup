@@ -23,7 +23,8 @@
   assert:
     that:
       - restic_excludes_params == '--exclude="*.DS_Store"
-       --exclude="*.Spotlight-V100" --exclude="*.fseventsd" --exclude="*.DocumentRevisions-V100" --exclude="*.TemporaryItems"'
+       --exclude="*.Spotlight-V100" --exclude="*.fseventsd" --exclude="*.DocumentRevisions-V100" --exclude="*.TemporaryItems"
+       --exclude="*.Trashes" --exclude="*.localized"'
 
 - set_fact:
     restic_excludes_default: []
