@@ -30,7 +30,9 @@
       pause:
         prompt: "Proceed with backup? (Y/n)"
       register: rdiff_confirm
-      when: interactive_mode
+      when:
+        - not (compare_result.stdout_lines is defined and compare_result.stdout_lines is search('No changes found'))
+        - interactive_mode
 
     - name: "{{ repo }}: Backup"
       shell: rdiff-backup {{ rdiff_excludes_params }} {{ src }} {{ repo }}
