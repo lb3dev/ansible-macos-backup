@@ -5,7 +5,7 @@ check:
 		ansible-playbook playbook-backup.yml --tags "check" --extra-vars "@config.yml"
 
 all:
-		ansible-playbook playbook-backup.yml --tags "backup,check" --extra-vars "@config.yml"
+		ansible-playbook playbook-backup.yml --extra-vars "@config.yml"
 
 bw:
 		ansible-playbook playbook-bitwarden.yml --extra-vars "@config.yml"
