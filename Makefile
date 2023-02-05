@@ -10,6 +10,9 @@ all:
 bw:
 		ansible-playbook playbook-bitwarden.yml --extra-vars "@config.yml"
 
+firefox:
+		ansible-playbook playbook-firefox.yml --extra-vars "@config.yml"
+
 test:
 		ansible-playbook tests/test.yml --skip-tags "check"
 

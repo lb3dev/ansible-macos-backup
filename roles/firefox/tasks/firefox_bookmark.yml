@@ -1,0 +1,13 @@
+---
+- name: "Firefox: Check bookmark file {{ bookmark_file }}"
+  stat:
+    path: "{{ bookmark_file }}"
+  register: bookmark_result
+  tags:
+    - firefox
+
+- name: "Firefox: Transform bookmark file with mobile {{ bookmark_file }}"
+  script: files/firefox-bookmarks.py -f {{ bookmark_file }}
+  when: bookmark_result.stat.exists
+  tags:
+    - firefox

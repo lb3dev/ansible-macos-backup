@@ -1,0 +1,8 @@
+---
+- include_tasks: firefox_bookmark.yml
+  vars:
+    bookmark_file: "{{ item }}"
+  with_items:
+    "{{ firefox_bookmark_files | default([]) }}"
+  tags:
+    - firefox
