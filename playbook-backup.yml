@@ -7,7 +7,6 @@
       prompt: Please enter master password (restic)
       private: true
   roles:
-    - firefox
     - restic
     - rdiff
     - copy
