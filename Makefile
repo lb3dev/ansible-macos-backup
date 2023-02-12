@@ -14,10 +14,10 @@ firefox:
 		ansible-playbook playbook-firefox.yml --extra-vars "@config.yml"
 
 test:
-		ansible-playbook tests/test.yml --skip-tags "check"
+		ansible-playbook tests/test.yml
 
 test-all:
-		ansible-playbook tests/playbook-test.yml --skip-tags "check"
+		ansible-playbook tests/playbook-test.yml
 
 lint:
 		yamllint .

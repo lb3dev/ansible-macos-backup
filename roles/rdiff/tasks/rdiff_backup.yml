@@ -36,9 +36,16 @@
 
     - name: "{{ repo }}: Backup"
       shell: rdiff-backup {{ rdiff_excludes_params }} {{ src }} {{ repo }}
+      register: backup_result
       when:
         - not (compare_result.stdout_lines is defined and compare_result.stdout_lines is search('No changes found'))
         - not interactive_mode or (interactive_mode and rdiff_confirm.user_input | lower == 'y')
+
+    - name: "{{ repo }}: Check repo data"
+      shell: rdiff-backup --verify {{ repo }}
+      when: backup_result.rc is defined and backup_result.rc == 0
+      tags:
+        - check
   when:
     - repo_base_result.stat.exists or (not repo_base_result.stat.exists and not skip_backup_if_repo_missing)
     - src_result.stat.exists

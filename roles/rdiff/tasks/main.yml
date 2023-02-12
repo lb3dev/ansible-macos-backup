@@ -14,12 +14,3 @@
     when: (item.repo is defined) and (item.src is defined)
   tags:
     - backup
-
-- include_tasks: rdiff_check.yml
-  vars:
-    repo: "{{ item.repo }}"
-  with_items:
-    "{{ rdiff_backups | default([]) }}"
-  when: (item.repo is defined) and (item.src is defined)
-  tags:
-    - check
