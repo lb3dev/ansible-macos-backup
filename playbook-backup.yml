@@ -2,11 +2,6 @@
 - hosts: all
   vars_files:
     - default.config.yml
-  vars_prompt:
-    - name: restic_password
-      prompt: Please enter master password (restic)
-      private: true
   roles:
-    - restic
     - rdiff
     - copy
