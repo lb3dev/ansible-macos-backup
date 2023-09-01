@@ -10,8 +10,7 @@ def convert_reddit_url(bookmark):
     if 'uri' in bookmark:
         url = bookmark['uri']
         if url.startswith('https://old.reddit.com'):
-            compact = '.compact' if url[-1] == '/' else '/.compact'
-            bookmark['uri'] = url + compact
+            bookmark['uri'] = url.replace('old.reddit.com', 'www.reddit.com')
 
 
 def apply_new_ids(bookmarks, count):
