@@ -2,5 +2,12 @@
 - hosts: all
   vars_files:
     - default.config.yml
+  vars_prompt:
+    - name: bitwarden_password
+      prompt: Please enter master password (Bitwarden)
+      private: true
+    - name: bitwarden_client_secret
+      prompt: Please enter client secret (Bitwarden)
+      private: true
   roles:
     - bitwarden

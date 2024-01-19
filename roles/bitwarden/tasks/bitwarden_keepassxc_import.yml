@@ -17,7 +17,7 @@
   expect:
     command: '/bin/bash -c "keepassxc-cli export {{ keepassxc_file }} > {{ keepassxc_export_file }}"'
     responses:
-      'Enter password to unlock .*': "{{ keepassxc_password }}"
+      'Enter password to unlock .*': "{{ bitwarden_password }}"
   no_log: true
 
 - name: "Bitwarden: Import KeepassXC export file {{ keepassxc_export_file }}"
