@@ -1,3 +1,23 @@
 ---
 skip_backup_if_repo_missing: false
 interactive_mode: false
+
+restic_perform_check: true
+restic_perform_data_check: false
+restic_password: ''
+
+restic_backups:
+#  - repo: /backup
+#    src: /data
+#  - repo: /restic
+#    src: /data
+
+rdiff_backups:
+#  - repo: /backup
+#    src: /data
+#  - repo: /rdiff
+#    src: /data
+
+copy_backups:
+#  - src: /file
+#    dest: /copy/file
