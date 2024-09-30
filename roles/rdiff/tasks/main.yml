@@ -9,7 +9,6 @@
       repo: "{{ item.repo }}"
       repo_base: "{{ item.repo | dirname }}"
       src: "{{ item.src }}"
-      interactive_mode: "{{ item.interactive_mode | default(false) }}"
     with_items:
       "{{ rdiff_backups | default([]) }}"
     when: (item.repo is defined) and (item.src is defined)

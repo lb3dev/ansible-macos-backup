@@ -4,6 +4,8 @@
     - ../default.config.yml
   tasks:
     - block:
+      - set_fact:
+          interactive_mode: false
       - import_tasks: test-restic.yml
       - import_tasks: test-restic-no-src-directory.yml
       - import_tasks: test-restic-exclude-parameters.yml
