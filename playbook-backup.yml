@@ -3,5 +3,5 @@
   vars_files:
     - default.config.yml
   roles:
-    - rdiff
     - copy
+    - rdiff
