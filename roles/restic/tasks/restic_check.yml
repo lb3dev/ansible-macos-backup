@@ -1,12 +1,12 @@
 ---
-- name: "{{ repo }}: Check repo stats"
+- name: "repo {{ repo }}: Check repo stats"
   stat:
     path: "{{ repo }}"
   register: repo_result
   tags:
     - check
 
-- name: "{{ repo }}: Check repo metadata"
+- name: "repo {{ repo }}: Check repo metadata"
   shell: restic check
   environment:
     RESTIC_REPOSITORY: "{{ repo }}"
@@ -15,7 +15,7 @@
   tags:
     - check
 
-- name: "{{ repo }}: Check repo data"
+- name: "repo {{ repo }}: Check repo data"
   shell: restic check --read-data
   environment:
     RESTIC_REPOSITORY: "{{ repo }}"

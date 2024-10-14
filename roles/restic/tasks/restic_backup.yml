@@ -1,20 +1,20 @@
 ---
-- name: "{{ repo }}: Reset diff output list"
+- name: "repo {{ repo }}: Reset diff output list"
   set_fact:
     restic_diffs: []
 
-- name: "{{ repo }}: Check src folder {{ src }}"
+- name: "repo {{ repo }}: Check src folder {{ src }}"
   stat:
     path: "{{ src }}"
   register: src_result
 
-- name: "{{ repo }}: Check repo base folder {{ repo_base }}"
+- name: "repo {{ repo }}: Check repo base folder {{ repo_base }}"
   stat:
     path: "{{ repo_base }}"
   register: repo_base_result
 
 - block:
-    - name: "{{ repo }}: Check restic repo config"
+    - name: "repo {{ repo }}: Check restic repo config"
       shell: restic cat config
       environment:
         RESTIC_REPOSITORY: "{{ repo }}"
@@ -23,35 +23,35 @@
       changed_when: cat_result.rc != 0
       failed_when: cat_result.rc != 0 and not ("no such file or directory" in cat_result.stderr)
 
-    - name: "{{ repo }}: Create repo if it doesn't exist"
+    - name: "repo {{ repo }}: Create repo if it doesn't exist"
       shell: restic init
       environment:
         RESTIC_REPOSITORY: "{{ repo }}"
         RESTIC_PASSWORD: "{{ restic_password }}"
       when: cat_result.rc == 10 and ("no such file or directory" in cat_result.stderr)
 
-    - name: "{{ repo }}: Dry run"
+    - name: "repo {{ repo }}: Dry run"
       shell: restic -vv --json backup --dry-run {{ restic_excludes_params }} {{ src }} | jq -rc 'select(.message_type == "verbose_status" and .action != "unchanged")'
       environment:
         RESTIC_REPOSITORY: "{{ repo }}"
         RESTIC_PASSWORD: "{{ restic_password }}"
       register: dryrun_result
 
-    - name: "{{ repo }}: Parse dry run output"
+    - name: "repo {{ repo }}: Parse dry run output"
       set_fact:
         restic_diffs: "{{ dryrun_result.stdout_lines | default([]) | map('from_json') | list | sort(attribute='action') | map('restic_status') | list }}"
 
-    - name: "{{ repo }}: Diff"
+    - name: "repo {{ repo }}: Diff"
       debug:
         msg: "{{ restic_diffs }}"
 
-    - name: "{{ repo }}: Confirm"
+    - name: "repo {{ repo }}: Confirm"
       pause:
         prompt: "Proceed with backup? (Y/n)"
       register: restic_confirm
       when: interactive_mode
 
-    - name: "{{ repo }}: Backup"
+    - name: "repo {{ repo }}: Backup"
       shell: restic backup {{ restic_excludes_params }} {{ src }}
       environment:
         RESTIC_REPOSITORY: "{{ repo }}"
