@@ -28,7 +28,7 @@
       environment:
         RESTIC_REPOSITORY: "{{ repo }}"
         RESTIC_PASSWORD: "{{ restic_password }}"
-      when: cat_result.rc == 1 and ("no such file or directory" in cat_result.stderr)
+      when: cat_result.rc == 10 and ("no such file or directory" in cat_result.stderr)
 
     - name: "{{ repo }}: Dry run"
       shell: restic -vv --json backup --dry-run {{ restic_excludes_params }} {{ src }} | jq -rc 'select(.message_type == "verbose_status" and .action != "unchanged")'
