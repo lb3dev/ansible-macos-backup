@@ -1,0 +1,93 @@
+---
+- name: Set stdout lines (backup, dry un)
+  set_fact:
+    restic_stdout_lines:
+      - '{"message_type":"summary","files_new":67,"files_changed":0,"files_unmodified":0,"dirs_new":23,"dirs_changed":0,"dirs_unmodified":0,"data_blobs":312,"tree_blobs":15,"data_added":356994098,"data_added_packed":336795284,"total_files_processed":67,"total_bytes_processed":376911232,"total_duration":0.580001234,"snapshot_id":"8dabcdef9b6159ac4dbecae622c20117591c35e8408a30b7378546687fba1fab","dry_run":true}'
+
+- name: Set expected lines (backup, dry run)
+  set_fact:
+    expected_output_lines:
+      - |-
+        Files:
+        67 New, 0 Changed, 0 Unmodified
+        Dirs:
+        23 New, 0 Changed, 0 Unmodified
+        Blobs:
+        312 Data Blobs, 15 Tree Blobs
+
+        Dry Run: Yes
+
+        Total files processed: 67, Total bytes processed: 359.45MB = 0.35GB, Total duration: 0.6s
+        Creating snapshot id: 8dabcdef9b6159ac4dbecae622c20117591c35e8408a30b7378546687fba1fab
+
+- name: Apply custom filter
+  set_fact:
+    result_output_lines: "{{ restic_stdout_lines | map('from_json') | map('restic_status') }}"
+
+- name: Ensure restic filter plugin produces the expected output (backup, dry run)
+  assert:
+    that:
+      - result_output_lines | length == expected_output_lines | length == 1
+      - result_output_lines[0] == expected_output_lines[0]
+
+- name: Set stdout lines (backup, no dry run)
+  set_fact:
+    restic_stdout_lines:
+      - '{"message_type":"summary","files_new":67,"files_changed":0,"files_unmodified":0,"dirs_new":23,"dirs_changed":0,"dirs_unmodified":0,"data_blobs":312,"tree_blobs":15,"data_added":356994098,"data_added_packed":336795284,"total_files_processed":67,"total_bytes_processed":376911232,"total_duration":0.580001234,"snapshot_id":"8dabcdef9b6159ac4dbecae622c20117591c35e8408a30b7378546687fba1fab"}'
+
+- name: Set expected lines (backup, no dry run)
+  set_fact:
+    expected_output_lines:
+      - |-
+        Files:
+        67 New, 0 Changed, 0 Unmodified
+        Dirs:
+        23 New, 0 Changed, 0 Unmodified
+        Blobs:
+        312 Data Blobs, 15 Tree Blobs
+
+        Dry Run: No
+
+        Total files processed: 67, Total bytes processed: 359.45MB = 0.35GB, Total duration: 0.6s
+        Creating snapshot id: 8dabcdef9b6159ac4dbecae622c20117591c35e8408a30b7378546687fba1fab
+
+- name: Apply custom filter
+  set_fact:
+    result_output_lines: "{{ restic_stdout_lines | map('from_json') | map('restic_status') }}"
+
+- name: Ensure restic filter plugin produces the expected output (backup, no dry run)
+  assert:
+    that:
+      - result_output_lines | length == expected_output_lines | length == 1
+      - result_output_lines[0] == expected_output_lines[0]
+
+- name: Set stdout lines (backup, no dry run, skipped if no changes)
+  set_fact:
+    restic_stdout_lines:
+      - '{"message_type":"summary","files_new":67,"files_changed":0,"files_unmodified":0,"dirs_new":23,"dirs_changed":0,"dirs_unmodified":0,"data_blobs":312,"tree_blobs":15,"data_added":356994098,"data_added_packed":336795284,"total_files_processed":67,"total_bytes_processed":376911232,"total_duration":0.580001234}'
+
+- name: Set expected lines (backup, no dry run, skipped if no changes)
+  set_fact:
+    expected_output_lines:
+      - |-
+        Files:
+        67 New, 0 Changed, 0 Unmodified
+        Dirs:
+        23 New, 0 Changed, 0 Unmodified
+        Blobs:
+        312 Data Blobs, 15 Tree Blobs
+
+        Dry Run: No
+
+        Total files processed: 67, Total bytes processed: 359.45MB = 0.35GB, Total duration: 0.6s
+        No snapshot id created, backup is skipped
+
+- name: Apply custom filter
+  set_fact:
+    result_output_lines: "{{ restic_stdout_lines | map('from_json') | map('restic_status') }}"
+
+- name: Ensure restic filter plugin produces the expected output (backup, no dry run)
+  assert:
+    that:
+      - result_output_lines | length == expected_output_lines | length == 1
+      - result_output_lines[0] == expected_output_lines[0]
