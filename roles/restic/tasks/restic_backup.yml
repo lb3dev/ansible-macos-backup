@@ -31,19 +31,15 @@
       when: cat_result.rc == 10 and ("no such file or directory" in cat_result.stderr)
 
     - name: "repo {{ repo }}: Dry run"
-      shell: restic -vv --json backup --dry-run {{ restic_excludes_params }} {{ src }} | jq -rc 'select(.message_type == "verbose_status" and .action != "unchanged")'
+      shell: restic -vv --json backup --dry-run {{ restic_excludes_params }} {{ src }} | jq -rc 'select((.message_type == "verbose_status" and .action != "unchanged") or (.message_type == "summary"))'
       environment:
         RESTIC_REPOSITORY: "{{ repo }}"
         RESTIC_PASSWORD: "{{ restic_password }}"
       register: dryrun_result
 
-    - name: "repo {{ repo }}: Parse dry run output"
-      set_fact:
-        restic_diffs: "{{ dryrun_result.stdout_lines | default([]) | map('from_json') | list | sort(attribute='action') | map('restic_status') | list }}"
-
-    - name: "repo {{ repo }}: Diff"
+    - name: "repo {{ repo }}: Dry run result"
       debug:
-        msg: "{{ restic_diffs }}"
+        msg: "{{ dryrun_result.stdout_lines | default([]) | map('from_json') | map('restic_status') }}"
 
     - name: "repo {{ repo }}: Confirm"
       pause:
@@ -52,11 +48,16 @@
       when: interactive_mode
 
     - name: "repo {{ repo }}: Backup"
-      shell: restic backup {{ restic_excludes_params }} {{ src }}
+      shell: restic -vv --json backup {{ restic_excludes_params }} {{ src }} | jq -rc 'select((.message_type == "verbose_status" and .action != "unchanged") or (.message_type == "summary"))'
       environment:
         RESTIC_REPOSITORY: "{{ repo }}"
         RESTIC_PASSWORD: "{{ restic_password }}"
+      register: backup_result
       when: not interactive_mode or (interactive_mode and restic_confirm.user_input | lower == 'y')
+
+    - name: "repo {{ repo }}: Backup result"
+      debug:
+        msg: "{{ backup_result.stdout_lines | default([]) | map('from_json') | map('restic_status') }}"
   when:
     - repo_base_result.stat.exists or (not repo_base_result.stat.exists and not skip_backup_if_repo_missing)
     - src_result.stat.exists
