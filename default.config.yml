@@ -2,8 +2,6 @@
 skip_backup_if_repo_missing: false
 interactive_mode: true
 
-restic_perform_check: true
-restic_perform_data_check: false
 restic_password: ''
 
 restic_backups:
