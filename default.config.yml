@@ -2,11 +2,13 @@
 skip_backup_if_repo_missing: false
 interactive_mode: true
 
-restic_backups:
-#  - repo: /backup
-#    src: /data
-#  - repo: /restic
-#    src: /data
+restic_repos:
+#  - /repo1
+#  - /repo2
+
+restic_sources:
+#  - /sources1
+#  - /sources2
 
 rdiff_backups:
 #  - repo: /backup

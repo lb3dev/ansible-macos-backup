@@ -7,9 +7,3 @@ restic_excludes_default:
   - '"*.TemporaryItems"'
   - '"*.Trashes"'
   - '"*.localized"'
-
-restic_backups: []
-#  - repo: /backup
-#    src: /data
-#  - repo: /restic
-#    src: /data

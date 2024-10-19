@@ -1,9 +1,10 @@
 ---
 - set_fact:
-    restic_backups:
-      - repo: test-repo-restic
-        src: missing-data
     restic_password: 'abc123!'
+    restic_repos:
+      - test-repo-restic
+    restic_sources:
+      - missing-data
 
 - include_role:
     name: roles/restic

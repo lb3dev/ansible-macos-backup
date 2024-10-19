@@ -3,11 +3,6 @@
   set_fact:
     restic_diffs: []
 
-- name: "repo {{ repo }}: Check src folder {{ src }}"
-  stat:
-    path: "{{ src }}"
-  register: src_result
-
 - name: "repo {{ repo }}: Check repo base folder {{ repo_base }}"
   stat:
     path: "{{ repo_base }}"
@@ -30,32 +25,32 @@
         RESTIC_PASSWORD: "{{ restic_password }}"
       when: cat_result.rc == 10 and ("no such file or directory" in cat_result.stderr)
 
-    - name: "repo {{ repo }}: Dry run"
-      shell: restic -vv --json backup --dry-run {{ restic_excludes_params }} {{ src }} | jq -rc 'select((.message_type == "verbose_status" and .action != "unchanged") or (.message_type == "summary"))'
+    - name: "repo {{ repo }} | src : {{ srcs }} | Dry run"
+      shell: restic -vv --json backup --dry-run {{ restic_excludes_params }} {{ srcs }} | jq -rc 'select((.message_type == "verbose_status" and .action != "unchanged") or (.message_type == "summary"))'
       environment:
         RESTIC_REPOSITORY: "{{ repo }}"
         RESTIC_PASSWORD: "{{ restic_password }}"
       register: dryrun_result
 
-    - name: "repo {{ repo }}: Dry run result"
+    - name: "repo {{ repo }} | src : {{ srcs }} | Dry run result"
       debug:
         msg: "{{ dryrun_result.stdout_lines | default([]) | map('from_json') | map('restic_status') }}"
 
-    - name: "repo {{ repo }}: Confirm"
+    - name: "repo {{ repo }} | src : {{ srcs }} | Confirm"
       pause:
         prompt: "Proceed with backup? (Y/n)"
       register: restic_confirm
       when: interactive_mode
 
-    - name: "repo {{ repo }}: Backup"
-      shell: restic -vv --json backup {{ restic_excludes_params }} {{ src }} | jq -rc 'select((.message_type == "verbose_status" and .action != "unchanged") or (.message_type == "summary"))'
+    - name: "repo {{ repo }} | src : {{ srcs }} | Backup"
+      shell: restic -vv --json backup {{ restic_excludes_params }} {{ srcs }} | jq -rc 'select((.message_type == "verbose_status" and .action != "unchanged") or (.message_type == "summary"))'
       environment:
         RESTIC_REPOSITORY: "{{ repo }}"
         RESTIC_PASSWORD: "{{ restic_password }}"
       register: backup_result
       when: not interactive_mode or (interactive_mode and restic_confirm.user_input | lower == 'y')
 
-    - name: "repo {{ repo }}: Backup result"
+    - name: "repo {{ repo }} | src : {{ srcs }} | Backup result"
       debug:
         msg: "{{ backup_result.stdout_lines | default([]) | map('from_json') | map('restic_status') }}"
 
@@ -66,4 +61,3 @@
         RESTIC_PASSWORD: "{{ restic_password }}"
   when:
     - repo_base_result.stat.exists or (not repo_base_result.stat.exists and not skip_backup_if_repo_missing)
-    - src_result.stat.exists

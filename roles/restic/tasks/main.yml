@@ -1,30 +1,49 @@
 ---
-- name: "Prompt restic master password"
-  pause:
-    prompt: "Enter restic repo password: (Exit restic backups with empty input)"
-    echo: no
-  register: restic_prompt
-  when: restic_password is not defined
-
-- name: "Set restic master password"
+- name: "Initialize restic repos"
   set_fact:
-    restic_password: "{{ restic_prompt.user_input }}"
-  when: restic_password is not defined
+    restic_repos: "{{ restic_repos | default([]) }}"
+
+- name: "Initialize restic sources"
+  set_fact:
+    restic_sources: "{{ restic_sources | default([]) }}"
+
+- name: "Check restic sources are present"
+  stat:
+    path: "{{ item }}"
+  with_items: "{{ restic_sources }}"
+  register: restic_sources_stats
+
+- name: "Get restic sources stats"
+  set_fact:
+    restic_sources_stats: "{{ restic_sources_stats.results | map(attribute='stat.exists') }}"
 
 - block:
+  - name: "Prompt restic master password"
+    pause:
+      prompt: "Enter restic repo password: (Exit restic backups with empty input)"
+      echo: no
+    register: restic_prompt
+    when: restic_password is not defined
+
+  - name: "Set restic master password"
+    set_fact:
+      restic_password: "{{ restic_prompt.user_input }}"
+    when: restic_password is not defined
+
   - name: "Set excludes parameter"
     set_fact:
       restic_excludes_params: "{{ ['--exclude='] | product(restic_excludes_default) | map('join') | list | join(' ') }}"
 
   - include_tasks: restic_backup.yml
     vars:
-      repo: "{{ item.repo }}"
-      repo_base: "{{ item.repo | dirname }}"
-      src: "{{ item.src }}"
+      repo: "{{ item }}"
+      repo_base: "{{ item | dirname }}"
+      srcs: "{{ restic_sources | join(' ') }}"
     with_items:
-      "{{ restic_backups | default([]) }}"
+      "{{ restic_repos }}"
     when:
-      - (item.repo is defined) and (item.src is defined)
       - restic_password != ''
-  tags:
-    - backup
+  when:
+    - restic_repos | length > 0
+    - restic_sources | length > 0
+    - restic_sources_stats is all
