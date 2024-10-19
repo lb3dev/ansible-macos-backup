@@ -58,6 +58,12 @@
     - name: "repo {{ repo }}: Backup result"
       debug:
         msg: "{{ backup_result.stdout_lines | default([]) | map('from_json') | map('restic_status') }}"
+
+    - name: "repo {{ repo }}: Check metadata"
+      shell: restic check
+      environment:
+        RESTIC_REPOSITORY: "{{ repo }}"
+        RESTIC_PASSWORD: "{{ restic_password }}"
   when:
     - repo_base_result.stat.exists or (not repo_base_result.stat.exists and not skip_backup_if_repo_missing)
     - src_result.stat.exists

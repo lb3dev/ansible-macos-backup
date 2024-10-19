@@ -6,15 +6,6 @@
   tags:
     - check
 
-- name: "repo {{ repo }}: Check repo metadata"
-  shell: restic check
-  environment:
-    RESTIC_REPOSITORY: "{{ repo }}"
-    RESTIC_PASSWORD: "{{ restic_password }}"
-  when: repo_result.stat.exists
-  tags:
-    - check
-
 - name: "repo {{ repo }}: Check repo data"
   shell: restic check --read-data
   environment:
