@@ -1,12 +1,12 @@
 ---
-- name: Find test directories
+- name: "cleanup: find test directories"
   find:
     paths: .
     patterns: "test-repo-*"
     file_type: directory
   register: find_result
 
-- name: Remove test directories
+- name: "cleanup: remove test directories"
   file:
     path: "{{ item.path }}"
     state: absent
@@ -14,7 +14,7 @@
   loop_control:
     label: "{{ item.path }}"
 
-- name: Remove test data directory
+- name: "cleanup: remove test data directory"
   file:
     path: data/
     state: absent
