@@ -1,4 +1,16 @@
 ---
+- name: "Prompt restic master password"
+  pause:
+    prompt: "Enter restic repo password: (Exit restic backups with empty input)"
+    echo: no
+  register: restic_prompt
+  when: restic_password is not defined
+
+- name: "Set restic master password"
+  set_fact:
+    restic_password: "{{ restic_prompt.user_input }}"
+  when: restic_password is not defined
+
 - block:
   - name: "Set excludes parameter"
     set_fact:
@@ -11,7 +23,9 @@
       src: "{{ item.src }}"
     with_items:
       "{{ restic_backups | default([]) }}"
-    when: (item.repo is defined) and (item.src is defined)
+    when:
+      - (item.repo is defined) and (item.src is defined)
+      - restic_password != ''
   tags:
     - backup
 
@@ -20,6 +34,8 @@
     repo: "{{ item.repo }}"
   with_items:
     "{{ restic_backups | default([]) }}"
-  when: (item.repo is defined) and (item.src is defined)
+  when:
+    - (item.repo is defined) and (item.src is defined)
+    - restic_password != ''
   tags:
     - check

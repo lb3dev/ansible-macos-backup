@@ -2,8 +2,6 @@
 skip_backup_if_repo_missing: false
 interactive_mode: true
 
-restic_password: ''
-
 restic_backups:
 #  - repo: /backup
 #    src: /data
