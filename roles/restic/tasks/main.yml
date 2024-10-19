@@ -28,14 +28,3 @@
       - restic_password != ''
   tags:
     - backup
-
-- include_tasks: restic_check.yml
-  vars:
-    repo: "{{ item.repo }}"
-  with_items:
-    "{{ restic_backups | default([]) }}"
-  when:
-    - (item.repo is defined) and (item.src is defined)
-    - restic_password != ''
-  tags:
-    - check
