@@ -3,4 +3,9 @@
   vars_files:
     - ../default.config.yml
   tasks:
-#    - import_tasks: test-rdiff.yml
+    - block:
+      - set_fact:
+          interactive_mode: false
+      - import_tasks: test-rdiff.yml
+      rescue:
+        - import_tasks: test-cleanup.yml
