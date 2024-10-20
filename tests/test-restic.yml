@@ -31,8 +31,9 @@
       - restic_result.stat.exists and restic_result.stat.isdir is defined and restic_result.stat.isdir
 
 - name: List snapshots
-  shell: restic -r test-repo-restic snapshots
+  shell: restic snapshots
   environment:
+    RESTIC_REPOSITORY: test-repo-restic
     RESTIC_PASSWORD: "{{ restic_password }}"
   register: restic_snapshots_result
 
