@@ -7,6 +7,7 @@
       - set_fact:
           interactive_mode: false
       - import_tasks: test-restic.yml
+      - import_tasks: test-restic-multiple-sources.yml
       - import_tasks: test-restic-no-src-directory.yml
       - import_tasks: test-restic-exclude-parameters.yml
       - import_tasks: test-restic-default-excludes.yml

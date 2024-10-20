@@ -1,0 +1,57 @@
+---
+- set_fact:
+    restic_password: 'abc123!'
+    restic_repos:
+      - test-repo-restic
+    restic_sources:
+      - data1
+      - data2
+
+- name: Create test data1 directory
+  file:
+    path: data1
+    state: directory
+
+- name: Create test data2 directory
+  file:
+    path: data2
+    state: directory
+
+- name: Create data1 files
+  file:
+    path: data1/data1.txt
+    state: touch
+
+- name: Create data2 files
+  file:
+    path: data2/data2.txt
+    state: touch
+
+- include_role:
+    name: roles/restic
+    tasks_from: main
+
+- name: Ensure restic backup directory is created
+  stat:
+    path: test-repo-restic
+  register: restic_result
+
+- name: Ensure restic backup directory is created
+  assert:
+    that:
+      - restic_result.stat.exists and restic_result.stat.isdir is defined and restic_result.stat.isdir
+
+- name: List snapshots
+  shell: restic snapshots --json | jq -rc '.[].paths'
+  environment:
+    RESTIC_REPOSITORY: test-repo-restic
+    RESTIC_PASSWORD: "{{ restic_password }}"
+  register: restic_snapshots_paths
+
+- name: Ensure new snapshot added with multiple paths
+  assert:
+    that:
+      - restic_snapshots_paths.stdout_lines | length == 1
+      - restic_snapshots_paths.stdout | from_json | length == 2
+
+- import_tasks: test-cleanup.yml
