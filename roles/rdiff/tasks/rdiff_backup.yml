@@ -4,11 +4,6 @@
     path: "{{ src }}"
   register: src_result
 
-- name: "{{ repo }}: Check repo base folder {{ repo_base }}"
-  stat:
-    path: "{{ repo_base }}"
-  register: repo_base_result
-
 - block:
     - name: "{{ repo }}: Check repo folder {{ repo }}"
       stat:
@@ -47,6 +42,5 @@
       tags:
         - check
   when:
-    - repo_base_result.stat.exists or (not repo_base_result.stat.exists and not skip_backup_if_repo_missing)
     - src_result.stat.exists
     - src_result.stat.isdir is defined and src_result.stat.isdir

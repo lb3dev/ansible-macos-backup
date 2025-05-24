@@ -11,7 +11,6 @@
       - import_tasks: test-restic-exclude-parameters.yml
       - import_tasks: test-restic-default-excludes.yml
       - import_tasks: test-rdiff.yml
-      - import_tasks: test-rdiff-skip-no-repo.yml
       - import_tasks: test-rdiff-no-src-directory.yml
       - import_tasks: test-rdiff-src-not-directory.yml
       - import_tasks: test-rdiff-exclude-parameters.yml

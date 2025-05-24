@@ -7,7 +7,6 @@
   - include_tasks: rdiff_backup.yml
     vars:
       repo: "{{ item.repo }}"
-      repo_base: "{{ item.repo | dirname }}"
       src: "{{ item.src }}"
     with_items:
       "{{ rdiff_backups | default([]) }}"

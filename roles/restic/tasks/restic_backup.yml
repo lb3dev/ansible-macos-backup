@@ -8,11 +8,6 @@
     path: "{{ src }}"
   register: src_result
 
-- name: "{{ repo }}: Check repo base folder {{ repo_base }}"
-  stat:
-    path: "{{ repo_base }}"
-  register: repo_base_result
-
 - block:
     - name: "{{ repo }}: Check restic repo config"
       shell: restic cat config
@@ -58,5 +53,4 @@
         RESTIC_PASSWORD: "{{ restic_password }}"
       when: not interactive_mode or (interactive_mode and restic_confirm.user_input | lower == 'y')
   when:
-    - repo_base_result.stat.exists or (not repo_base_result.stat.exists and not skip_backup_if_repo_missing)
     - src_result.stat.exists
