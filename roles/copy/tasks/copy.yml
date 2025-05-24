@@ -8,4 +8,4 @@
   copy:
     src: "{{ src }}"
     dest: "{{ dest }}"
-  when: dest_result.stat.exists or (not dest_result.stat.exists and not skip_backup_if_repo_missing)
+  when: dest_result.stat.exists

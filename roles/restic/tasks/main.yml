@@ -7,7 +7,6 @@
   - include_tasks: restic_backup.yml
     vars:
       repo: "{{ item.repo }}"
-      repo_base: "{{ item.repo | dirname }}"
       src: "{{ item.src }}"
     with_items:
       "{{ restic_backups | default([]) }}"
