@@ -2,6 +2,8 @@
 - hosts: all
   vars_files:
     - default.config.yml
+  pre_tasks:
+    - import_tasks: tasks/debug_info.yml
   roles:
     - copy
     - rdiff
