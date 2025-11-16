@@ -7,7 +7,7 @@
     - firefox
 
 - name: "Firefox: Transform bookmark file with mobile {{ bookmark_file }}"
-  script: files/firefox-bookmarks.py -f {{ bookmark_file }}
+  script: files/firefox-bookmarks.py -f "{{ bookmark_file }}"
   when: bookmark_result.stat.exists
   tags:
     - firefox

@@ -1,8 +1,13 @@
 ---
+- name: Prompt Firefox bookmark file location
+  pause:
+    prompt: "Enter the full file path of the Firefox bookmark file"
+  register: firefox_path
+  tags:
+    - firefox
+
 - include_tasks: firefox_bookmark.yml
   vars:
-    bookmark_file: "{{ item }}"
-  with_items:
-    "{{ firefox_bookmark_files | default([]) }}"
+    bookmark_file: "{{ firefox_path.user_input | trim }}"
   tags:
     - firefox
